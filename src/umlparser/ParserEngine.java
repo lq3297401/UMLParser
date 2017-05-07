@@ -25,7 +25,7 @@ public class ParserEngine {
 		this.inputDir = inputDir;
 		this.allUMLString = new StringBuffer();
 		this.allClassesOrInterfaces = new HashMap<>();
-		this.allRelationships = new HashSet();
+		this.allRelationships = new HashSet<>();
 	}
 	
 	public void loadFile() {
@@ -37,9 +37,9 @@ public class ParserEngine {
 					CompilationUnit cu = JavaParser.parse(file);
 					TypeDeclaration type = cu.getType(0);
 					if (type instanceof ClassOrInterfaceDeclaration) {
+						System.out.println("type " + ((ClassOrInterfaceDeclaration) type).isInterface());
 						if (((ClassOrInterfaceDeclaration) type).isInterface()) {
 							allClassesOrInterfaces.put(file.getName().split(".java")[0],INTERFACE);
-							
 						} else {
 							allClassesOrInterfaces.put(file.getName().split(".java")[0],CLASS);
 						}
@@ -49,15 +49,6 @@ public class ParserEngine {
 				}
 			}
 		}
-		Iterator it = allClassesOrInterfaces.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, String> pair = (Map.Entry<String, String>) it.next();
-			if(pair.getValue().equals(CLASS)){
-				
-			}
-			it.remove();
-		}
-
 		for(File file : folder.listFiles()) {
 			if(file.isFile() && file.getName().endsWith(".java")){
 				IntermediateObject iObject = new IntermediateObject(file, allClassesOrInterfaces);
@@ -65,8 +56,10 @@ public class ParserEngine {
 				allRelationships.addAll(iObject.relationships);
 			}
 		}
-		
+		System.out.println("relationship: size = " + allRelationships.size());
 		for(ClassRelationship relationship : allRelationships) {
+			System.out.println("relationship:" + relationship.toString());
+			
 			allUMLString.append(relationship.toString());
 		}
 		

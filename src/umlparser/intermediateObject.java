@@ -34,7 +34,7 @@ public class IntermediateObject {
 	private ArrayList<ClassAttribute> attributes;
     private ArrayList<ClassMethod> methods;
     private ArrayList<ClassConstructor> constructors;
-    public ArrayList<ClassRelationship> relationships;
+    public HashSet<ClassRelationship> relationships;
     private HashMap<String,String> allClassesOrInterfaces;
 	private boolean isInterface;
 	private StringBuffer UMLString;
@@ -47,17 +47,18 @@ public class IntermediateObject {
 		this.attributes = new ArrayList<>();
 		this.allClassesOrInterfaces = allClassesOrInterfaces;
 		this.constructors = new ArrayList<>();
-		this.relationships = new ArrayList<>();
+		this.relationships = new HashSet<>();
 		this.UMLString = new StringBuffer();
 		this.methods = new ArrayList<>();
 		fileToCu(file);
 		TypeDeclaration type = this.cu.getType(0);
 		if (type instanceof ClassOrInterfaceDeclaration) {
-			if (((ClassOrInterfaceDeclaration) type).isInterface()) {
-				this.isInterface = true;
+			if (!((ClassOrInterfaceDeclaration) type).isInterface()) {
+				this.isInterface = false;
 				List<ClassOrInterfaceType> extendedTypes = ((ClassOrInterfaceDeclaration) type).getExtendedTypes();
 				for(ClassOrInterfaceType t : extendedTypes) {
 					String extendedClass = t.getName().getIdentifier();
+					System.out.println("extendedClass=" + extendedClass);
 					if(allClassesOrInterfaces.containsKey(extendedClass) && allClassesOrInterfaces.get(extendedClass).equals(ParserEngine.CLASS)) {
 						relationships.add(new ClassRelationship(extendedClass, this.className, ClassRelationship.EXTENSION));
 					}
@@ -70,7 +71,7 @@ public class IntermediateObject {
 	                }
 	            }
 			} else {
-				this.isInterface = false;
+				this.isInterface = true;
 			}
 		}
 		
@@ -87,7 +88,7 @@ public class IntermediateObject {
 					 while (matcher.find()) {
 						 pType = matcher.group(1);
 					}
-					 
+					System.out.println("allClassesOrInterfaces.size : " + allClassesOrInterfaces.size());
 					if(allClassesOrInterfaces.containsKey(vType)) {
 						if(variable.getType().getArrayLevel() > 0 ) {
 							this.relationships.add(new ClassRelationship(vType, className, ClassRelationship.UNDEFINEDASSOCIATION));
@@ -95,7 +96,7 @@ public class IntermediateObject {
 							this.relationships.add(new ClassRelationship(vType, className, ClassRelationship.ASSOCIATION));
 						}
 					} else if(pType != null && allClassesOrInterfaces.containsKey(pType)) {
-						this.relationships.add(new ClassRelationship(vType, className, ClassRelationship.UNDEFINEDASSOCIATION));
+						this.relationships.add(new ClassRelationship(pType, className, ClassRelationship.UNDEFINEDASSOCIATION));
 					} else {
 						String fName = variable.getNameAsString();
 						if(((FieldDeclaration) member).isPublic() || ((FieldDeclaration) member).isPrivate()) {
@@ -113,7 +114,7 @@ public class IntermediateObject {
 					 ArrayList<String> parameters = new ArrayList<>();
 					 for(Parameter parameter : m.getParameters()) {
 						 String pType = parameter.getType().toString();
-						 if(allClassesOrInterfaces.containsKey(pType)) {
+						 if(allClassesOrInterfaces.containsKey(pType) && allClassesOrInterfaces.get(pType).equals(ParserEngine.INTERFACE)) {
 							 this.relationships.add(new ClassRelationship(pType, this.className, ClassRelationship.DEPENDENCY));
 						 }
 						 parameters.add(parameter.getNameAsString() + ":" + pType);
@@ -171,7 +172,7 @@ public class IntermediateObject {
 		}
 		
 		UMLString.append("}\n");
-		
+		System.out.println("relationships: size = " + relationships.size());
 		return UMLString.toString();
 	}
 

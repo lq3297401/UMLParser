@@ -15,26 +15,28 @@ public class ClassRelationship {
 		this.classA = A;
 		this.classB = B;
 		this.relationship = re;
+		System.out.println("re ==" + re);
+		System.out.println("new relationship : " + this.toString());
 	}
 
 	public String toString() {
 		StringBuffer info = new StringBuffer();
 		info.append(classA);
 		String line = new String();
-		switch (relationship) {
-		case "ASSOCIATION":
+		switch (this.relationship) {
+		case ASSOCIATION:
 			line = " -- ";
 			break;
-		case "UNDEFINEDASSOCIATION":
+		case UNDEFINEDASSOCIATION:
 			line = " \"*\"-- ";
 			break;
-		case "DEPENDENCY":
+		case DEPENDENCY:
 			line = " <.. ";
 			break;
-		case "EXTENSION":
+		case EXTENSION:
 			line = " <|-- ";
 			break;
-		case "IMPLEMENT":
+		case IMPLEMENT:
 			line = " <|.. ";
 			break;
 		}
