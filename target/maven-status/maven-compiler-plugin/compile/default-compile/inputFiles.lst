@@ -1,2 +1,8 @@
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/ClassConstructor.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/ClassMethod.java
 /Users/qi/Documents/workspace/UMLParser/src/umlparser/UmlParser.java
-/Users/qi/Documents/workspace/UMLParser/src/umlparser/ParseEngine.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/IntermediateObject.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/ParserEngine.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/UmlWriter.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/ClassAttribute.java
+/Users/qi/Documents/workspace/UMLParser/src/umlparser/ClassRelationship.java
